@@ -102,6 +102,11 @@ for run_index in range(run_amount):
                 seconds = float(line.split(":", 1)[1])
                 print(f"Delaying for {seconds} seconds...")
                 time.sleep(seconds)
+                
+            elif line.startswith("url"):
+                pyautogui.write(urlLinks[run_index])
+                print(f"Pasted Link: {urlLinks[run_index]}")
+                time.sleep(command_pause)
 
             else:
                 print("Unknown command:", line)
