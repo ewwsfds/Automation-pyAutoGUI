@@ -9,8 +9,9 @@ from collections import namedtuple
 # Hotkey: ctrl+tab+enter
 # Grid:8(x,y:x,y:x,y)
 # Delay:46
+# scroll:x
 
-run_amount = 4
+run_amount = 3
 
 command_pause=1
 
@@ -27,7 +28,7 @@ for run_index in range(run_amount):
         # 🔁 Keep trying until image is found
         while True:
             try:
-                pos = pyautogui.locateOnScreen(image_name, confidence=0.8)
+                pos = pyautogui.locateOnScreen(image_name, grayscale=False)
             except pyautogui.ImageNotFoundException:
                 pos = None  # Treat as "not found"
 
@@ -51,9 +52,10 @@ for run_index in range(run_amount):
 
         # Loop through each line (foreach)
         for line in lines:
-            line = line.strip()
+            line = line.strip().lower()
 
-            if line.startswith("Click"):
+
+            if line.startswith("click"):
                 coords = line.split(":")[1]
                 x, y = coords.split(",")
                 x, y = int(x), int(y)
@@ -62,19 +64,28 @@ for run_index in range(run_amount):
                 print(f"Clicked at {x},{y}")
                 time.sleep(command_pause)
 
-            elif line.startswith("Print:"):
+            elif line.startswith("print:"):
                 text = line.split(":", 1)[1]
                 pyautogui.write(text)
                 print(f"Typed: {text}")
                 time.sleep(command_pause)
 
-            elif line.startswith("Hotkey:"):
+            elif line.startswith("hotkey:"):
                 keys = line.split(":", 1)[1].split("+")
                 pyautogui.hotkey(*keys)
                 print(f"Hotkey pressed: {'+'.join(keys)}")
                 time.sleep(command_pause)
 
-            elif line.startswith("Grid:"):
+            elif line.startswith("scroll:"):
+                value = int(line.split(":", 1)[1])
+
+                pyautogui.scroll(value)
+
+                print(f"Scrolled: {value}")
+                time.sleep(command_pause)
+
+
+            elif line.startswith("grid:"):
                 Position = namedtuple("Position", ["x", "y"])
 
                 numberValue = int(re.search(r'Grid:(\d+)', line).group(1))
@@ -82,15 +93,20 @@ for run_index in range(run_amount):
                 posList = [Position(int(x), int(y)) for x, y in coords]
 
                 pyautogui.click(
-                    posList[numberValue + run_index-1].x,
-                    posList[numberValue + run_index-1].y
+                    posList[numberValue + run_index].x,
+                    posList[numberValue + run_index].y
                 )
                 time.sleep(command_pause)
 
-            elif line.startswith("Delay:"):
+            elif line.startswith("delay:"):
                 seconds = float(line.split(":", 1)[1])
                 print(f"Delaying for {seconds} seconds...")
                 time.sleep(seconds)
+                
+            elif line.startswith("url"):
+                pyautogui.write(urlLinks[run_index])
+                print(f"Pasted Link: {urlLinks[run_index]}")
+                time.sleep(command_pause)
 
             else:
                 print("Unknown command:", line)
