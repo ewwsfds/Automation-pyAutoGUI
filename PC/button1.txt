@@ -5,7 +5,7 @@ delay:2
 
 //text Area
 Click:524,449
-hotkey:ctr+a
+hotkey:ctrl+a
 print:Hello world
 
 scroll:-900
