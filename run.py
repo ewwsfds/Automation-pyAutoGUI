@@ -108,8 +108,8 @@ for run_index in range(run_amount):
                 posList = [Position(int(x), int(y)) for x, y in coords]
 
                 pyautogui.click(
-                    posList[numberValue + run_index].x,
-                    posList[numberValue + run_index].y
+                    posList[numberValue + run_index-1].x,
+                    posList[numberValue + run_index-1].y
                 )
                 time.sleep(command_pause)
 
