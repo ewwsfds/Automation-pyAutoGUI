@@ -1,0 +1,11 @@
+//Upload
+Click:1054,527
+Grid:(267,188:267,188)
+
+//text Area
+Click:524,449
+hotkey:ctr+a
+print:Hello world
+
+scroll:-900
+scroll:-900
