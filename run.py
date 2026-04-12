@@ -28,7 +28,7 @@ for run_index in range(run_amount):
         # 🔁 Keep trying until image is found
         while True:
             try:
-                pos = pyautogui.locateOnScreen(image_name, confidence=0.8)
+                pos = pyautogui.locateOnScreen(image_name, grayscale=False)
             except pyautogui.ImageNotFoundException:
                 pos = None  # Treat as "not found"
 
