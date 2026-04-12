@@ -19,12 +19,12 @@ urlLinks = [
 ]
 
 
-run_amount = 18
+run_amount = 12
 
 command_pause=1
 
 image_pause=2
-for run_index in range(run_amount):
+for run_index in range(run_amount+1):
 
     # Find all files that start with "button" and end with ".png"
     img_files = glob.glob("button*.png")
@@ -42,7 +42,7 @@ for run_index in range(run_amount):
 
             if pos:
                 print(f"Found {image_name}")
-                print(f"Run Index: {run_index} / {run_amount}")
+                print(f"Run Index: {run_index+1} / {run_amount}")
                 center = pyautogui.center(pos)
                 pyautogui.click(center)
                 time.sleep(command_pause)
