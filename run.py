@@ -34,12 +34,15 @@ for run_index in range(run_amount):
 
             if pos:
                 print(f"Found {image_name}")
+                print(f"Run Index: {run_index} / {run_amount}")
+
                 center = pyautogui.center(pos)
                 pyautogui.click(center)
                 time.sleep(command_pause)
                 break
             else:
                 print(f"{image_name} not found, retrying in 2s...")
+                print(f"Run Index: {run_index} / {run_amount}")
                 time.sleep(image_pause)
 
 
