@@ -71,7 +71,7 @@ for run_index in range(run_amount):
                 text = line.split(":", 1)[1]
                 pyautogui.write(text)
                 print(f"Typed: {text}")
-                time.sleep(command_pause)
+                time.sleep(command_pause*2)
 
             elif line.startswith("hotkey:"):
                 keys = line.split(":", 1)[1].split("+")
