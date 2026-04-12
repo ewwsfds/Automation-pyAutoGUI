@@ -3,5 +3,5 @@
 
 ## PC
 ``
-33vid/folder^
+33vid/folder
 ``
