@@ -1,8 +1,8 @@
 //Text area
 Click:184,286
 hotkey:ctrl+a
-print:Fortnite fortnite creative map fortnite box fight fortnite victory #fortnite #fortniteclips #ogfortnite
-
+//print:Fortnite fortnite creative map fortnite box fight fortnite victory #fortnite #fortniteclips #ogfortnite
+hotkey:ctrl+v
 
 //open Dialog
 Click:81,717
