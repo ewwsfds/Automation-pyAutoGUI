@@ -1,1 +1,3 @@
 url
+delay:1
+hotkey:enter
