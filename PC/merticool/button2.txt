@@ -1,5 +1,5 @@
 //Click video
-Click:135,384
+Click:121,411
 
 //Upload
 Click:919,585
