@@ -24,7 +24,7 @@ run_amount = 12
 command_pause=1
 
 image_pause=2
-for run_index in range(run_amount+1):
+for run_index in range(run_amount):
 
     # Find all files that start with "button" and end with ".png"
     img_files = glob.glob("button*.png")
