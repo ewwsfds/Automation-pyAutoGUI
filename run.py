@@ -3,15 +3,23 @@ import time
 import glob
 import re
 from collections import namedtuple
-
+import os
 # click:x,y
 # Print: hello world
 # Hotkey: ctrl+tab+enter
 # Grid:8(x,y:x,y:x,y)
 # Delay:46
 # scroll:x
+# url
 
-run_amount = 3
+
+urlLinks = [
+    "https://www.tiktok.com/@fortniteclassic847/video/7513942181837589791",
+    "https://www.tiktok.com/@fortniteclassic847/video/7513956777130528030",
+]
+
+
+run_amount = 18
 
 command_pause=1
 
@@ -30,12 +38,11 @@ for run_index in range(run_amount):
             try:
                 pos = pyautogui.locateOnScreen(image_name, grayscale=False)
             except pyautogui.ImageNotFoundException:
-                pos = None  # Treat as "not found"
+                pos = None  # Treat as "not found"a
 
             if pos:
                 print(f"Found {image_name}")
                 print(f"Run Index: {run_index} / {run_amount}")
-
                 center = pyautogui.center(pos)
                 pyautogui.click(center)
                 time.sleep(command_pause)
@@ -45,6 +52,9 @@ for run_index in range(run_amount):
                 print(f"Run Index: {run_index} / {run_amount}")
                 time.sleep(image_pause)
 
+        path = f"button{img_run_index+1}.txt"
+        if not os.path.exists(path):
+            continue
 
         # Read file and store lines into list
         with open(f"button{img_run_index+1}.txt", "r") as file:
@@ -74,8 +84,10 @@ for run_index in range(run_amount):
                 time.sleep(command_pause*2)
 
             elif line.startswith("hotkey:"):
-                keys = line.split(":", 1)[1].split("+")
+                keys = [k.strip().lower() for k in line.split(":", 1)[1].split("+")]
+
                 pyautogui.hotkey(*keys)
+
                 print(f"Hotkey pressed: {'+'.join(keys)}")
                 time.sleep(command_pause)
 
@@ -91,7 +103,7 @@ for run_index in range(run_amount):
             elif line.startswith("grid:"):
                 Position = namedtuple("Position", ["x", "y"])
 
-                numberValue = int(re.search(r'Grid:(\d+)', line).group(1))
+                numberValue = int(re.search(r'grid:(\d+)', line).group(1))
                 coords = re.findall(r'(\d+),(\d+)', line)
                 posList = [Position(int(x), int(y)) for x, y in coords]
 
@@ -105,7 +117,7 @@ for run_index in range(run_amount):
                 seconds = float(line.split(":", 1)[1])
                 print(f"Delaying for {seconds} seconds...")
                 time.sleep(seconds)
-                
+
             elif line.startswith("url"):
                 pyautogui.write(urlLinks[run_index])
                 print(f"Pasted Link: {urlLinks[run_index]}")
