@@ -9,6 +9,7 @@ from collections import namedtuple
 # Hotkey: ctrl+tab+enter
 # Grid:8(x,y:x,y:x,y)
 # Delay:46
+# scroll:x
 
 run_amount = 4
 
@@ -51,7 +52,8 @@ for run_index in range(run_amount):
 
         # Loop through each line (foreach)
         for line in lines:
-            line = line.strip()
+            line = line.strip().lower()
+
 
             if line.startswith("Click"):
                 coords = line.split(":")[1]
@@ -74,6 +76,15 @@ for run_index in range(run_amount):
                 print(f"Hotkey pressed: {'+'.join(keys)}")
                 time.sleep(command_pause)
 
+            elif line.startswith("Scroll:"):
+                value = int(line.split(":", 1)[1])
+
+                pyautogui.scroll(value)
+
+                print(f"Scrolled: {value}")
+                time.sleep(command_pause)
+
+
             elif line.startswith("Grid:"):
                 Position = namedtuple("Position", ["x", "y"])
 
@@ -82,8 +93,8 @@ for run_index in range(run_amount):
                 posList = [Position(int(x), int(y)) for x, y in coords]
 
                 pyautogui.click(
-                    posList[numberValue + run_index-1].x,
-                    posList[numberValue + run_index-1].y
+                    posList[numberValue + run_index].x,
+                    posList[numberValue + run_index].y
                 )
                 time.sleep(command_pause)
 
