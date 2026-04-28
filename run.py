@@ -4,6 +4,7 @@ import glob
 import re
 from collections import namedtuple
 import os
+
 # click:x,y
 # Print: hello world
 # Hotkey: ctrl+tab+enter
@@ -22,7 +23,7 @@ urlLinks = [
 ]
 
 
-run_amount = 30
+run_amount = 28
 
 command_pause=1
 
@@ -70,8 +71,37 @@ for run_index in range(run_amount):
         for line in lines:
             line = line.strip().lower()
 
+            if line.strip().startswith("click-condition:"):
+                data = line.split(":", 1)[1]
 
-            if line.startswith("click"):
+                number_part = data.split("(", 1)[0]
+
+                coords = data.split("(", 1)[1].strip(")")
+                x, y = coords.split(",")
+                x, y = int(x), int(y)
+
+                
+
+                if "-" in number_part:
+                    start, end = number_part.split("-")
+                    start = int(start)
+                    end = int(end)
+                    if run_index+1>=start & run_index+1<end:
+                        pyautogui.click(x, y)
+                        print(f"[COND] Clicked at {x},{y} ({start}-{end}) runIndex={run_index}")
+                        time.sleep(command_pause)
+                
+                else:
+                    number_part=int(number_part)
+                    if run_index+1>=number_part :
+                        pyautogui.click(x, y)
+                        print(f"[COND] Clicked at {x},{y} ({number_part}) runIndex={run_index}")
+                        time.sleep(command_pause)  
+
+                continue   
+        
+
+            elif line.strip().startswith("click"):
                 coords = line.split(":")[1]
                 x, y = coords.split(",")
                 x, y = int(x), int(y)
@@ -80,48 +110,18 @@ for run_index in range(run_amount):
                 print(f"Clicked at {x},{y}")
                 time.sleep(command_pause)
 
-            elif line.startswith("print:"):
+            elif line.strip().startswith("print:"):
                 text = line.split(":", 1)[1]
                 pyautogui.write(text)
                 print(f"Typed: {text}")
                 time.sleep(command_pause*2)
 
 
-            elif line.startswith("click-condition:"):
-                data = line.split(":", 1)[1]
 
-                # format: number(x,y) OR start-end(x,y)
-                number_part, coords_part = data.split("(")
+                   
+                
 
-                coords = coords_part.strip(")")
-                x, y = coords.split(",")
-                x, y = int(x), int(y)
-
-                if "-" in number_part:
-                    start, end = map(int, number_part.split("-"))
-
-                    # convert to 0-based like your old logic
-                    start_idx = start - 1
-                    end_idx = end - 1
-
-                    if start_idx <= run_index <= end_idx:
-                        pyautogui.click(x, y)
-                        print(f"[COND] Clicked at {x},{y} ({start}-{end}) runIndex={run_index}")
-                        time.sleep(command_pause)
-                    else:
-                        print(f"[COND] Skipped {x},{y} (runIndex={run_index} not in {start}-{end})")
-
-                else:
-                    number = int(number_part)
-
-                    if run_index >= number - 1:
-                        pyautogui.click(x, y)
-                        print(f"[COND] Clicked at {x},{y} (runIndex={run_index} >= {number-1})")
-                        time.sleep(command_pause)
-                    else:
-                        print(f"[COND] Skipped click at {x},{y} (runIndex={run_index} < {number-1})")
-
-            elif line.startswith("hotkey:"):
+            elif line.strip().startswith("hotkey:"):
                 keys = [k.strip().lower() for k in line.split(":", 1)[1].split("+")]
 
                 pyautogui.hotkey(*keys)
@@ -129,7 +129,7 @@ for run_index in range(run_amount):
                 print(f"Hotkey pressed: {'+'.join(keys)}")
                 time.sleep(command_pause)
 
-            elif line.startswith("scroll:"):
+            elif line.strip().startswith("scroll:"):
                 value = int(line.split(":", 1)[1])
 
                 pyautogui.scroll(value)
@@ -137,8 +137,30 @@ for run_index in range(run_amount):
                 print(f"Scrolled: {value}")
                 time.sleep(command_pause)
 
+            elif line.strip().startswith("grid-repeat:"):
+                # 1. remove everything up to first ":"
+                data = line.split(":", 1)[1]
 
-            elif line.startswith("grid:"):
+                # 2. index = until first "("
+                index = data.split("(", 1)[0]
+                index = int(index)
+                # 3. coordArrayBlob = inside (...)
+                coordArrayBlob = data.split("(", 1)[1].split(")", 1)[0]
+
+                # 4. coorArray = split by ":"
+                coorArray = coordArrayBlob.split(":")
+
+                readIndex=(run_index) % (len(coorArray))+index-1
+
+
+                x,y= coorArray[readIndex].split(",")
+                pyautogui.click(int(x), int(y))
+                print(f"[GRID-REPEAT] Clicked at {x},{y} (cycle={readIndex})")
+                time.sleep(command_pause)
+                continue
+
+
+            elif line.strip().startswith("grid:"):
                 Position = namedtuple("Position", ["x", "y"])
 
                 numberValue = int(re.search(r'grid:(\d+)', line).group(1))
@@ -152,40 +174,14 @@ for run_index in range(run_amount):
                 time.sleep(command_pause)
 
 
-            elif line.startswith("grid-repeat:"):
-                Position = namedtuple("Position", ["x", "y"])
-
-                numberValue = int(re.search(r'grid-repeat:(\d+)', line).group(1))
-                coords = re.findall(r'(\d+),(\d+)', line)
-                posList = [Position(int(x), int(y)) for x, y in coords]
-
-                index = numberValue + run_index - 1
-
-                # wrap index
-                wrapped_index = index % len(posList)
-
-                # how many times we looped over the list
-                cycle = index // len(posList)
-
-                # apply offset per cycle (you can tweak multiplier logic here)
-                offset_x = cycle * posList[0].x
-                offset_y = cycle * posList[0].y
-
-                final_x = posList[wrapped_index].x + offset_x
-                final_y = posList[wrapped_index].y + offset_y
-
-                pyautogui.click(final_x, final_y)
-                print(f"[GRID-REPEAT] Clicked at {final_x},{final_y} (cycle={cycle})")
-                time.sleep(command_pause)
 
 
-
-            elif line.startswith("delay:"):
+            elif line.strip().startswith("delay:"):
                 seconds = float(line.split(":", 1)[1])
                 print(f"Delaying for {seconds} seconds...")
                 time.sleep(seconds)
 
-            elif line.startswith("url"):
+            elif line.strip().startswith("url"):
                 pyautogui.write(urlLinks[run_index])
                 print(f"Pasted Link: {urlLinks[run_index]}")
                 time.sleep(command_pause)
