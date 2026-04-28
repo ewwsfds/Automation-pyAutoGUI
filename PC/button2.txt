@@ -31,3 +31,5 @@ Click:1052,686
 //Next month type 2 (bigger)
 //Click:641,204
 
+scroll:-900
+scroll:-900
