@@ -16,7 +16,7 @@ Click:738,538
 
 // 1h
 click-condition:7-14(741,601)
-Click:741,601
+//Click:741,601
 
 // 6h
 click-condition:15-21(743,731)
