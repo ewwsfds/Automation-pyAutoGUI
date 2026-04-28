@@ -12,6 +12,7 @@ import os
 # scroll:x
 # url
 # click-condition:3(500,300)
+# click-condition:3-6(500,300)
 # grid-repeat:1(100,100:200,100:300,100:)
 
 
@@ -89,22 +90,36 @@ for run_index in range(run_amount):
             elif line.startswith("click-condition:"):
                 data = line.split(":", 1)[1]
 
-                # format: number(x,y)
+                # format: number(x,y) OR start-end(x,y)
                 number_part, coords_part = data.split("(")
-                number = int(number_part)
 
                 coords = coords_part.strip(")")
                 x, y = coords.split(",")
                 x, y = int(x), int(y)
 
-                if runIndex >= number - 1:
-                    pyautogui.click(x, y)
-                    print(f"[COND] Clicked at {x},{y} (runIndex={runIndex} >= {number-1})")
-                    time.sleep(command_pause)
+                if "-" in number_part:
+                    start, end = map(int, number_part.split("-"))
+
+                    # convert to 0-based like your old logic
+                    start_idx = start - 1
+                    end_idx = end - 1
+
+                    if start_idx <= run_index <= end_idx:
+                        pyautogui.click(x, y)
+                        print(f"[COND] Clicked at {x},{y} ({start}-{end}) runIndex={run_index}")
+                        time.sleep(command_pause)
+                    else:
+                        print(f"[COND] Skipped {x},{y} (runIndex={run_index} not in {start}-{end})")
+
                 else:
-                    print(f"[COND] Skipped click at {x},{y} (runIndex={runIndex} < {number-1})")
+                    number = int(number_part)
 
-
+                    if run_index >= number - 1:
+                        pyautogui.click(x, y)
+                        print(f"[COND] Clicked at {x},{y} (runIndex={run_index} >= {number-1})")
+                        time.sleep(command_pause)
+                    else:
+                        print(f"[COND] Skipped click at {x},{y} (runIndex={run_index} < {number-1})")
 
             elif line.startswith("hotkey:"):
                 keys = [k.strip().lower() for k in line.split(":", 1)[1].split("+")]
