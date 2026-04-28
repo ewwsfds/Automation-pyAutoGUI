@@ -86,7 +86,7 @@ for run_index in range(run_amount):
                     start, end = number_part.split("-")
                     start = int(start)
                     end = int(end)
-                    if run_index+1>=start & run_index+1<end:
+                    if start <= run_index + 1 <= end:
                         pyautogui.click(x, y)
                         print(f"[COND] Clicked at {x},{y} ({start}-{end}) runIndex={run_index}")
                         time.sleep(command_pause)
