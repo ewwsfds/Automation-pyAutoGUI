@@ -11,6 +11,8 @@ import os
 # Delay:46
 # scroll:x
 # url
+# click-condition:3(500,300)
+# grid-repeat:1(100,100:200,100:300,100:)
 
 
 urlLinks = [
@@ -19,7 +21,7 @@ urlLinks = [
 ]
 
 
-run_amount = 12
+run_amount = 30
 
 command_pause=1
 
@@ -83,6 +85,27 @@ for run_index in range(run_amount):
                 print(f"Typed: {text}")
                 time.sleep(command_pause*2)
 
+
+            elif line.startswith("click-condition:"):
+                data = line.split(":", 1)[1]
+
+                # format: number(x,y)
+                number_part, coords_part = data.split("(")
+                number = int(number_part)
+
+                coords = coords_part.strip(")")
+                x, y = coords.split(",")
+                x, y = int(x), int(y)
+
+                if runIndex >= number - 1:
+                    pyautogui.click(x, y)
+                    print(f"[COND] Clicked at {x},{y} (runIndex={runIndex} >= {number-1})")
+                    time.sleep(command_pause)
+                else:
+                    print(f"[COND] Skipped click at {x},{y} (runIndex={runIndex} < {number-1})")
+
+
+
             elif line.startswith("hotkey:"):
                 keys = [k.strip().lower() for k in line.split(":", 1)[1].split("+")]
 
@@ -112,6 +135,35 @@ for run_index in range(run_amount):
                     posList[numberValue + run_index-1].y
                 )
                 time.sleep(command_pause)
+
+
+            elif line.startswith("grid-repeat:"):
+                Position = namedtuple("Position", ["x", "y"])
+
+                numberValue = int(re.search(r'grid-repeat:(\d+)', line).group(1))
+                coords = re.findall(r'(\d+),(\d+)', line)
+                posList = [Position(int(x), int(y)) for x, y in coords]
+
+                index = numberValue + run_index - 1
+
+                # wrap index
+                wrapped_index = index % len(posList)
+
+                # how many times we looped over the list
+                cycle = index // len(posList)
+
+                # apply offset per cycle (you can tweak multiplier logic here)
+                offset_x = cycle * posList[0].x
+                offset_y = cycle * posList[0].y
+
+                final_x = posList[wrapped_index].x + offset_x
+                final_y = posList[wrapped_index].y + offset_y
+
+                pyautogui.click(final_x, final_y)
+                print(f"[GRID-REPEAT] Clicked at {final_x},{final_y} (cycle={cycle})")
+                time.sleep(command_pause)
+
+
 
             elif line.startswith("delay:"):
                 seconds = float(line.split(":", 1)[1])
