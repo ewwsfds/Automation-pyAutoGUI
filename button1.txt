@@ -1,4 +1,0 @@
-//Text
-Click:422,355
-hotkey:ctrl+a
-hotkey:ctrl+v
