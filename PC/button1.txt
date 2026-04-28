@@ -11,7 +11,8 @@ hotkey:ctrl+a
 hotkey:ctrl+v
 
 //cancel
-Click:656,830
+Click:1246,788
 
 scroll:-900
 scroll:-900
+scroll:100
