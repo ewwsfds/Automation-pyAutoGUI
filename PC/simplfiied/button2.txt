@@ -1,0 +1,16 @@
+Grid:1(795,389:819,383:844,383:685,413:708,414:729,415:765,416:790,414:819,413:848,414:764,385)
+
+//Open clock
+Click:963,304
+
+// up down
+click-condition:1-5(961,368)
+click-condition:6-10(956,506)
+
+
+//Cancel clock
+Click:958,206
+
+// confirm
+Click:1008,484
+
