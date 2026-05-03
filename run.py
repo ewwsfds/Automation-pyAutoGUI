@@ -23,9 +23,11 @@ urlLinks = [
 ]
 
 
-run_amount = 28
+run_amount = 12
+
 
 command_pause=1
+
 
 image_pause=2
 for run_index in range(run_amount):
@@ -150,7 +152,7 @@ for run_index in range(run_amount):
                 # 4. coorArray = split by ":"
                 coorArray = coordArrayBlob.split(":")
 
-                readIndex=(run_index) % (len(coorArray))+index-1
+                readIndex = (run_index + index - 1) % len(coorArray)
 
 
                 x,y= coorArray[readIndex].split(",")
