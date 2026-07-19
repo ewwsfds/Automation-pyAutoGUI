@@ -1,0 +1,15 @@
+url
+delay:0.5
+hotkey:enter
+delay:3
+
+//Download button
+Click:818,355
+
+
+delay:1
+hotkey:ctrl+l
+print: https://snaptik.app/en3
+hotkey:enter
+
+
