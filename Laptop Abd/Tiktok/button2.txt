@@ -1,0 +1,26 @@
+//open schedule
+Click:737,809
+Grid-repeat:1(729,614:789,616:410,656:479,649:539,649:595,650:662,659:721,653:793,656:415,705)
+
+
+// Open clock
+Click:487,812
+
+// up
+//click-condition:8-14(273,391) 
+
+
+//Down
+click-condition:10(441,750)
+click-condition:20(441,750)
+
+
+//Cancel
+Click:859,785
+
+
+
+scroll:-900
+scroll:-900
+
+
