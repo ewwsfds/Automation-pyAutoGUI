@@ -1,2 +1,5 @@
 delay:4
-hotkey:ctrl+r
+hotkey:ctrl+l
+print: https://snaptik.app/en3
+hotkey:enter
+delay:2
